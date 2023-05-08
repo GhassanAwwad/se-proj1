@@ -6,6 +6,7 @@ const decompress = require('decompress');
 const gitClone = require('git-clone');
 const fs = require('fs');
 const path = require('path');
+const debug = require('debug')('app');
 
 const app = express();
 const upload = multer({ dest: 'uploads/' });
@@ -51,10 +52,12 @@ app.post('/api/git-clone', (req, res) => {
 
   gitClone(url, repoPath, (error) => {
     if (error) {
-      console.error('Error while cloning the repository:', error);
-      return res.status(500).send('Error while cloning the repository.');
+      debug('Error while cloning the repository:', error);
+      debug('Error message:', error.message);
+      debug('Error stack:', error.stack);
+      return res.status(500).send(`Error while cloning the repository: ${error.message}`);
     }
-
+  
     res.status(200).send('Repository cloned successfully.');
   });
 });
@@ -68,7 +71,8 @@ app.post('/api/scan-project', (req, res) => {
   if (scanSuccessful) {
     res.status(200).json({ message: 'Scan successful' });
   } else {
-    res.status(500).json({ message: 'Failed to scan the project' });
+    console.error('Error while scanning the project');
+    res.status(500).json({ message: 'Failed to scan the project. Please try again later.' });
   }
 });
 

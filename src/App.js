@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './App.css';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate, Link } from 'react-router-dom';
 import Signin from './SignIn';
-import { Link } from 'react-router-dom';
 import Vulnerabilities from './Vulnerabilities';
 import UserInfoPage from './UserInfo.js';
 import TeamInfoPage from './TeamInfo.js';
+import ScanResultsPage from './ScanResultsPage';
 
 axios.defaults.baseURL = 'http://localhost:8000';
 
@@ -14,6 +14,8 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [projectUploaded, setProjectUploaded] = useState(false);
   const [githubUrl, setGithubUrl] = useState('');
+  const [projectId, setProjectId] = useState(null);
+  const [scanId, setScanId] = useState(null);
 
   const handleSignIn = () => {
     setIsLoggedIn(true);
@@ -31,6 +33,7 @@ function App() {
         },
       });
 
+      setProjectId(response.data.id);
       alert(response.data.message);
       setProjectUploaded(true);
     } catch (error) {
@@ -42,17 +45,26 @@ function App() {
   const handleGitClone = async () => {
     try {
       const response = await axios.post('/api/git-clone', { url: githubUrl });
+      setProjectId(response.data.id);
       alert(response.data.message);
       setProjectUploaded(true);
     } catch (error) {
       console.error('Error cloning repository:', error);
-      alert('Failed to clone the repository. Please check the URL and try again.');
+  
+      if (error.response && error.response.status === 400) {
+        alert('Invalid repository URL. Please check the URL and try again.');
+      } else if (error.response && error.response.status === 404) {
+        alert('Repository not found. Please check the URL and try again.');
+      } else {
+        alert('Failed to clone the repository. Please try again later.');
+      }
     }
   };
 
   const handleScanProject = async () => {
     try {
-      const response = await axios.post('/api/scan-project');
+      const response = await axios.post(`/api/projects/${projectId}/trigger-scan`);
+      setScanId(response.data.id);
       alert(response.data.message);
     } catch (error) {
       console.error('Error scanning project:', error);
@@ -71,7 +83,7 @@ function App() {
               isLoggedIn ? (
                 <>
                   <nav>
-                    <ul>
+                    <ul class="my-list">
                       <li>
                         <Link to="/">Home</Link>
                       </li>
@@ -108,7 +120,16 @@ function App() {
                           Clone Project from Git
                         </button>
                       </div>
+                      <button className="scan-button stylish-button" onClick={handleScanProject} disabled={!projectUploaded}>
+                      Scan Project
+                      </button>
                     </div>
+                    <Routes>
+                      <Route path="/user" element={<UserInfoPage />} />
+                      <Route path="/team" element={<TeamInfoPage />} />
+                      <Route path="/scans/:id" element={<ScanResultsPage />} />
+                      <Route path="/vulnerabilities" element={<Vulnerabilities projectId={projectId} handleScanProject={handleScanProject} />} />
+                    </Routes>
                   </div>
                 </>
               ) : (
@@ -116,8 +137,6 @@ function App() {
               )
             }
           />
-          <Route path="/user" element={<UserInfoPage />} />
-          <Route path="/team" element={<TeamInfoPage />} />
         </Routes>
       </div>
     </Router>

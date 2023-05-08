@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const MyComponent = () => {
+const ScanResultsPage = () => {
   const [vulnerabilities, setVulnerabilities] = useState([]);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ const MyComponent = () => {
 
   return (
     <div>
-      <h1>Vulnerabilities</h1>
+      <h1>Scan Results</h1>
       <ul>
         {vulnerabilities.map((vulnerability) => (
           <li key={vulnerability.id}>
@@ -33,4 +33,4 @@ const MyComponent = () => {
   );
 };
 
-export default MyComponent;
+export default ScanResultsPage;

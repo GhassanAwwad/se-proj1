@@ -1,6 +1,6 @@
 .App {
   font-family: "Roboto", sans-serif;
-  background: linear-gradient(89deg, #642495 0%, #197BB5 100%);
+  background: linear-gradient(89deg, #451054 0%, #197BB5 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -12,6 +12,20 @@
 .title {
   font-size: 2.5rem;
   margin-bottom: 2rem;
+}
+
+.my-list {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+}
+
+.my-list li {
+  margin: 0 10px;
+}
+
+.my-list li a {
+  color: white;
 }
 
 .background {
@@ -26,8 +40,12 @@
 
 .button-container {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
+  align-items: center;
   width: 100%;
+  margin-top: 2rem;
+  padding: 1rem;
 }
 
 .upload-button,
@@ -39,6 +57,8 @@
   color: #ffffff;
   cursor: pointer;
   transition: all 0.3s;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 .upload-button:hover,
@@ -86,4 +106,38 @@
   height: 100%;
   background: transparent;
   z-index: 0;
+}
+
+#file-input {
+  position: absolute;
+  top: -100px;
+  left: -100px;
+}
+
+.stylish-button {
+  font-size: 1.5rem;
+  padding: 1rem 2rem;
+  background-color: #ffffff;
+  color: #000000;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s;
+}
+
+.stylish-button:hover {
+  background-color: #197BB5;
+  color: #ffffff;
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+}
+
+.stylish-button:disabled {
+  background-color: #cccccc;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.stylish-button:disabled:hover {
+  background-color: #cccccc;
+  color: #000000;
+  box-shadow: none;
 }
