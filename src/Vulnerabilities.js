@@ -7,7 +7,7 @@ const MyComponent = () => {
   useEffect(() => {
     const fetchVulnerabilities = async () => {
       try {
-        const scanId = 123; // Replace with the actual scan ID
+        const scanId = 123; 
         const response = await axios.get(`http://localhost:8000/api/scans/${scanId}/`);
         setVulnerabilities(response.data.vulnerabilities);
       } catch (error) {
